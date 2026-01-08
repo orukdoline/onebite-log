@@ -47,3 +47,19 @@ export async function signInWithOAuth(provider: Provider) {
   if (error) throw error;
   return data;
 }
+
+// supabase 서버에게 인증 메일을 발송하라고 요청하는 비동기 함수.
+export async function requestPasswordResetEmail(email: string) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${import.meta.env.VITE_PUBLIC_URL}/reset-password`,
+  });
+}
+
+export async function updatePassword(password: string) {
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) throw error;
+  return data;
+}

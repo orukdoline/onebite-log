@@ -14,7 +14,7 @@ const initailState = {
 
 const useSessionStore = create(
   devtools(
-    // combine의 첫 번째 인수로 데이터 타입을 정의하고 두 번째 인수로 액션 함수들을 반환하는 콜백 함수를 정의.
+    // combine의 첫 번째 인수로 초기 데이터를 정의하고 두 번째 인수로 액션 함수들을 반환하는 콜백 함수를 정의.
     combine(initailState, (set) => ({
       actions: {
         setSession: (session: Session | null) => {

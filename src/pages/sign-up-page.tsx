@@ -1,14 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSignUp } from "@/hooks/mutations/use-sign-up";
+import { generateErrorMessage } from "@/lib/error";
 import { useState } from "react";
 import { Link } from "react-router";
+import { toast } from "sonner";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState(""); // Email 정보 저장하는 State.
   const [password, setPassword] = useState(""); // Password 정보 저장하는 State.
 
-  const { mutate: signUp } = useSignUp(); // 회원가입 기능을 수행하는 Mutate.
+  const { mutate: signUp, isPending: isSignUpPending } = useSignUp({
+    onError: (error) => {
+      const message = generateErrorMessage(error);
+      toast.error(message, {
+        position: "top-center",
+      });
+    },
+  }); // 회원가입 기능을 수행하는 Mutate.
 
   // 회원가입 버튼을 클릭하였을 때 동작하는 이벤트 핸들러.
   const hanleSignUpClick = () => {
@@ -25,6 +34,7 @@ export default function SignUpPage() {
       <div className="text-xl font-bold">회원가입</div>
       <div className="flex flex-col gap-2">
         <Input
+          disabled={isSignUpPending} // 로딩 상태일 때는 disable 처리.
           value={email}
           onChange={(e) => setEmail(e.target.value)} // Email 정보가 입력될 때마다 Email State 정보 수정.
           className="py-6"
@@ -32,6 +42,7 @@ export default function SignUpPage() {
           placeholder="example@abc.com"
         />
         <Input
+          disabled={isSignUpPending}
           value={password}
           onChange={(e) => setPassword(e.target.value)} // Password 정보가 입력될 때마다 Password State 정보 수정.
           className="py-6"
@@ -40,7 +51,11 @@ export default function SignUpPage() {
         />
       </div>
       <div>
-        <Button className="w-full" onClick={hanleSignUpClick}>
+        <Button
+          disabled={isSignUpPending}
+          className="w-full"
+          onClick={hanleSignUpClick}
+        >
           회원가입
         </Button>
       </div>

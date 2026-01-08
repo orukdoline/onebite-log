@@ -1,5 +1,7 @@
 import supabase from "@/lib/supabase"; // supabase 클라이언트 import.
+import type { Provider } from "@supabase/supabase-js";
 
+// 이메일 회원가입을 하는 비동기 함수.
 export async function signUp({
   email,
   password,
@@ -18,6 +20,7 @@ export async function signUp({
   return data; // 요청을 성공하면 회원가입 결과를 반환.
 }
 
+// 이메일 로그인을 하는 비동기 함수.
 export async function signInWithPassword({
   email,
   password,
@@ -28,6 +31,17 @@ export async function signInWithPassword({
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+// 소셜 로그인을 하는 비동기 함수.
+export async function signInWithOAuth(provider: Provider) {
+  // supabase에서 지원하는 OAuth 서비스만 사용할 수 있게 Provider 불러오기.
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
   });
 
   if (error) throw error;

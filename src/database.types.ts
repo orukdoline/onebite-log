@@ -25,11 +25,11 @@ export type Database = {
         }
         Insert: {
           author_id?: string
-          content: string
+          content?: string
           created_at?: string
           id?: number
           imgae_urls?: string[] | null
-          like_count: number
+          like_count?: number
         }
         Update: {
           author_id?: string

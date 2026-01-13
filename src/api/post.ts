@@ -85,3 +85,15 @@ export async function deletePost(id: number) {
   if (error) throw error;
   return data;
 }
+
+// 조회 요청을 하는 비동기 함수.
+export async function fetchPosts({ from, to }: { from: number; to: number }) {
+  const { data, error } = await supabase
+    .from("post") // post 테이블에서 조회.
+    .select("*, author: profile!author_id(*)") // profile 테이블에 있는 author_id 컬럼과 post 테이블에 있는 author 테이블을 기준으로 조인.
+    .order("created_at", { ascending: false }) // 내림차순 정렬.
+    .range(from, to);
+
+  if (error) throw error;
+  return data;
+}

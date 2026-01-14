@@ -73,7 +73,7 @@ export async function updatePost(post: Partial<PostEntity> & { id: number }) {
   return data;
 }
 
-// 이미지 등록에 실패하면 해당 게시물을 삭제하는 비동기 함수.
+// 이미지 등록에 실패하거나 사용자가 삭제 요청을 하면 해당 게시물을 삭제하는 비동기 함수.
 export async function deletePost(id: number) {
   const { data, error } = await supabase
     .from("post")

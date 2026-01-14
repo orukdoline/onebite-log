@@ -37,7 +37,7 @@ export default function PostEditorModal() {
 
   const { mutate: createPost, isPending: isCreatePostPending } = useCreatePost({
     onSuccess: () => {
-      close(); // 게시글 등록을 성공하면 모달을 닫음.
+      postEditorModal.actions.close(); // 게시글 등록을 성공하면 모달을 닫음.
     },
     onError: (error) => {
       toast.error("포스트 생성에 실패했습니다.", { position: "top-center" }); // 게시글 등록을 실패하면 실패 문구 출력.

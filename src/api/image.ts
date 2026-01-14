@@ -24,3 +24,20 @@ export async function uploadImage({
 
   return publicUrl;
 }
+
+// supabase에 있는 이미지를 삭제하는 비동기 함수.
+export async function deleteImagesInPath(path: string) {
+  // supabase의 storage에서 path 경로에 있는 모든 파일 정보를 가져옴.
+  const { data: files, error: fetchFilesError } = await supabase.storage
+    .from(BUCKET_NAME)
+    .list(path);
+
+  if (fetchFilesError) throw fetchFilesError;
+
+  // 파일 정보를 하나씩 순회하면서 supabase에서 해당 파일을 삭제함.
+  const { error: removeError } = await supabase.storage
+    .from(BUCKET_NAME)
+    .remove(files.map((file) => `${path}/${file.name}`));
+
+  if (removeError) throw removeError;
+}

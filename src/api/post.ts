@@ -97,3 +97,15 @@ export async function fetchPosts({ from, to }: { from: number; to: number }) {
   if (error) throw error;
   return data;
 }
+
+// postId를 이용해서 하나의 게시글을 가져오는 비동기 함수.
+export async function fetchPostById(postId: number) {
+  const { data, error } = await supabase
+    .from("post")
+    .select("*, author: profile!author_id(*)")
+    .eq("id", postId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}

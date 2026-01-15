@@ -1,9 +1,12 @@
 import { deleteImagesInPath } from "@/api/image";
 import { deletePost } from "@/api/post";
+import { QUERY_KEYS } from "@/lib/constants";
 import type { useMutationCallback } from "@/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useDeletePost(callbacks?: useMutationCallback) {
+  const queryClient = useQueryClient(); // 모든 쿼리를 관리하는 중앙 관리자.
+
   return useMutation({
     mutationFn: deletePost,
     // deletePost를 수행함으로써 반환된 값을 onSuccess 함수의 프로퍼티로 넘김.
@@ -15,6 +18,10 @@ export function useDeletePost(callbacks?: useMutationCallback) {
       if (deletedPost.image_urls && deletedPost.image_urls.length > 0) {
         await deleteImagesInPath(`${deletedPost.author_id}/${deletedPost.id}`);
       }
+
+      queryClient.resetQueries({
+        queryKey: QUERY_KEYS.post.list, // 해당 키를 갖는 모든 데이터 전부 초기화.
+      });
     },
     onError: (error) => {
       if (callbacks?.onError) callbacks.onError(error);

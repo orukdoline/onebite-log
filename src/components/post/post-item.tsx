@@ -9,8 +9,14 @@ import {
 import { formatTimeAgo } from "@/lib/time";
 import DeletePostButton from "./delete-post-button";
 import EditPostButton from "./edit-post-button";
+import { useSession } from "@/store/session";
 
 export default function PostItem(post: Post) {
+  const session = useSession(); // 현재 사용자의 session 데이터를 불러오기.
+  const userId = session?.user.id; // session 데이터에 있는 user의 id를 담음.
+
+  const isMine = post.author_id === userId; // 게시물의 작성자와 로그인된 사용자가 동일한 인물인지 판별.
+
   return (
     <div className="flex flex-col gap-4 border-b pb-8">
       <div className="flex justify-between">
@@ -30,10 +36,12 @@ export default function PostItem(post: Post) {
           </div>
         </div>
 
-        <div className="text-muted-foreground flex text-sm">
-          <EditPostButton {...post} />
-          <DeletePostButton id={post.id} />
-        </div>
+        {isMine && (
+          <div className="text-muted-foreground flex text-sm">
+            <EditPostButton {...post} />
+            <DeletePostButton id={post.id} />
+          </div>
+        )}
       </div>
 
       <div className="flex cursor-pointer flex-col gap-5">

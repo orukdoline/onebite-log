@@ -63,3 +63,15 @@ export async function updatePassword(password: string) {
   if (error) throw error;
   return data;
 }
+
+// 로그아웃 하는 비동기 함수.
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    // 실패한다면 supabase와 관련 없이 로컬 스토리지에 있는 액세스 토큰들을 모두 삭제.
+    await supabase.auth.signOut({
+      scope: "local",
+    });
+  }
+}

@@ -14,6 +14,7 @@ import { usePostByIdData } from "@/hooks/queries/use-post-by-id-data";
 import Loader from "../loader";
 import FallBack from "../fallback";
 import LikePostButton from "./like-post-button";
+import { Link } from "react-router";
 
 export default function PostItem({ postId }: { postId: number }) {
   const session = useSession(); // 현재 사용자의 session 데이터를 불러오기.
@@ -38,11 +39,13 @@ export default function PostItem({ postId }: { postId: number }) {
     <div className="flex flex-col gap-4 border-b pb-8">
       <div className="flex justify-between">
         <div className="flex items-start gap-4">
-          <img
-            src={post.author.avatar_url || defaultAvatar}
-            alt={`${post.author.nickname}의 프로필 이미지`}
-            className="h-10 w-10 rounded-full object-cover"
-          />
+          <Link to={`profile/${post.author_id}`}>
+            <img
+              src={post.author.avatar_url || defaultAvatar}
+              alt={`${post.author.nickname}의 프로필 이미지`}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          </Link>
           <div>
             <div className="font-bold hover:underline">
               {post.author.nickname}

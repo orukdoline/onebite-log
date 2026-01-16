@@ -32,6 +32,8 @@ export async function deleteImagesInPath(path: string) {
     .from(BUCKET_NAME)
     .list(path);
 
+  if (!files || files.length === 0) return; // 파일이 없으면 함수 종료.
+
   if (fetchFilesError) throw fetchFilesError;
 
   // 파일 정보를 하나씩 순회하면서 supabase에서 해당 파일을 삭제함.

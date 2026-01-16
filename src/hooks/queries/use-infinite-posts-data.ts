@@ -6,18 +6,25 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 const PAGE_SIZE = 5; // 한 페이지당 불러올 게시물 개수.
 
 // PAGE_SIZE만큼 게시물을 불러오되 무한 스크롤로 다음 게시물을 불러오는 react-query.
-export function useInfinitePostData() {
+export function useInfinitePostData(authorId?: string) {
   const queryClient = useQueryClient();
 
   const session = useSession();
 
   return useInfiniteQuery({
-    queryKey: QUERY_KEYS.post.list,
+    queryKey: !authorId
+      ? QUERY_KEYS.post.list
+      : QUERY_KEYS.post.userList(authorId),
     queryFn: async ({ pageParam }) => {
       const from = pageParam * PAGE_SIZE; // 불러올 게시물 중 첫 게시물의 번호.
       const to = from + PAGE_SIZE - 1; // 불러올 게시물 중 마지막 게시물의 번호.
 
-      const posts = await fetchPosts({ from, to, userId: session!.user.id }); // 게시물 불러오기.
+      const posts = await fetchPosts({
+        from,
+        to,
+        userId: session!.user.id,
+        authorId,
+      }); // 게시물 불러오기.
       posts.forEach((post) => {
         // 쿼리를 통해서 불러온 모든 post 아이템들이 각각 개별적인 캐시로 정규화가 되어서 저장.
         queryClient.setQueryData(QUERY_KEYS.post.byId(post.id), post);

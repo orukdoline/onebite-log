@@ -91,12 +91,14 @@ export async function fetchPosts({
   from,
   to,
   userId,
+  authorId,
 }: {
   from: number;
   to: number;
   userId: string;
+  authorId?: string;
 }) {
-  const { data, error } = await supabase
+  const request = supabase
     .from("post") // post 테이블에서 조회.
     // profile 테이블에 있는 author_id 컬럼과 post 테이블에 있는 author 컬럼을 기준으로 조인.
     // like 테이블에 있는 post_id 컬럼과 post 테이블에 있는 post_id 컬럼을 기준으로 조인.
@@ -105,7 +107,12 @@ export async function fetchPosts({
     .order("created_at", { ascending: false }) // 내림차순 정렬.
     .range(from, to);
 
+  if (authorId) request.eq("author_id", authorId); // authorId가 있으면 전체 게시물 중 authorId가 같은 게시물만 반환받도록 재요청.
+
+  const { data, error } = await request;
+
   if (error) throw error;
+
   return data.map((post) => ({
     ...post,
     isLiked: post.myLiked && post.myLiked.length > 0,

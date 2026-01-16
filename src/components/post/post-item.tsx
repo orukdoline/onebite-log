@@ -13,6 +13,7 @@ import { useSession } from "@/store/session";
 import { usePostByIdData } from "@/hooks/queries/use-post-by-id-data";
 import Loader from "../loader";
 import FallBack from "../fallback";
+import LikePostButton from "./like-post-button";
 
 export default function PostItem({ postId }: { postId: number }) {
   const session = useSession(); // 현재 사용자의 session 데이터를 불러오기.
@@ -85,10 +86,11 @@ export default function PostItem({ postId }: { postId: number }) {
       </div>
 
       <div className="flex gap-2">
-        <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border-1 p-2 px-4 text-sm">
-          <HeartIcon className="h-4 w-4" />
-          <span>0</span>
-        </div>
+        <LikePostButton
+          id={post.id}
+          likeCount={post.like_count}
+          isLiked={post.isLiked}
+        />
 
         <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border-1 p-2 px-4 text-sm">
           <MessageCircle className="h-4 w-4" />

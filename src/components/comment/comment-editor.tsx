@@ -17,7 +17,15 @@ type EditMode = {
   onClose: () => void;
 };
 
-type Props = CreateMode | EditMode;
+type ReplyMode = {
+  type: "REPLY";
+  postId: number;
+  parentCommentId: number;
+  rootCommentId: number;
+  onClose: () => void;
+};
+
+type Props = CreateMode | EditMode | ReplyMode;
 
 export default function CommentEditor(props: Props) {
   const [content, setContent] = useState(""); // 댓글 내용과 관련된 state.
@@ -27,6 +35,7 @@ export default function CommentEditor(props: Props) {
     useCreateComment({
       onSuccess: () => {
         setContent(""); // 댓글 추가를 성공하면 content state를 초기화.
+        if (props.type === "REPLY") props.onClose(); // 그리고 props의 type이 REPLY라면 댓글 입력관련 컴포넌트 숨김.
       },
       onError: () => {
         toast.error("댓글 추가를 실패했습니다.", { position: "top-center" });
@@ -51,6 +60,14 @@ export default function CommentEditor(props: Props) {
     if (props.type === "CREATE") {
       // props의 type이 CREATE라면 댓글 추가 mutation 호출.
       createComment({ postId: props.postId, content });
+    } else if (props.type === "REPLY") {
+      // props의 type이 REPLY라면 부모 댓글, 루트 댓글 정보를 포함하여 mutation 호출.
+      createComment({
+        postId: props.postId,
+        content,
+        parentCommentId: props.parentCommentId,
+        rootCommentId: props.rootCommentId,
+      });
     } else {
       // props의 type이 EDIT라면 댓글 수정 mutation 호출.
       updateComment({
@@ -79,8 +96,8 @@ export default function CommentEditor(props: Props) {
       />
       <div className="flex justify-end gap-2">
         {
-          // props의 type이 EDIT라면 취소 버튼 노출.
-          props.type === "EDIT" && (
+          // props의 type이 EDIT이거나 REPLY라면 취소 버튼 노출.
+          (props.type === "EDIT" || props.type === "REPLY") && (
             <Button
               disabled={isPending}
               variant={"outline"}

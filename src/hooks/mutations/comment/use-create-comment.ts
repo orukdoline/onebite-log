@@ -23,7 +23,7 @@ export function useCreateComment(callbacks?: useMutationCallback) {
             throw new Error("댓글이 캐시 데이터에 보관되어있지 않습니다.");
           if (!profile)
             throw new Error("사용자의 프로필 정보를 찾을 수 없습니다.");
-          return [{ ...newComment, author: profile }, ...comments];
+          return [...comments, { ...newComment, author: profile }];
         },
       );
     },

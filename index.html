@@ -1,10 +1,48 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>한입 로그</title>
+
+    <!-- 오픈 그래프 관련 태그 -->
+    <meta property="og:title" content="한입 로그" />
+    <meta
+      property="og:description"
+      content="한 입 크기로 잘라먹는 SNS 프로젝트"
+    />
+    <meta property="og:image" content="/thumbnail.png" />
+
+    <script>
+      try {
+        // 로컬 스토리지의 ThemeStore에 JSON 데이터가 있으면 해당 데이터를 파싱.
+        const themeStore = localStorage.getItem("ThemeStore")
+          ? JSON.parse(localStorage.getItem("ThemeStore"))
+          : null;
+
+        // themeStore 변수에서 테마 정보만 추출.
+        const theme = themeStore.state.theme;
+
+        // 현재 페이지에서 dark, light인 클래스를 제거.
+        const htmlTag = document.documentElement;
+        htmlTag.classList.remove("dark", "light");
+
+        // 로컬 스토리지에 저장되어 있는 데이터가 system이라면 현재 기기의 테마가 dark인지 판별.
+        if (theme === "system") {
+          const isDarkTheme = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          // 현재 기기의 테마가 dark라면 현재 페이지에 dark 클래스, light라면 현재 페이지에 light 클래스 추가.
+          htmlTag.classList.add(isDarkTheme ? "dark" : "light");
+        } else {
+          // 로컬 스토리지에 저장되어 있는 데이터가 system이 아니라면 해당 클래스 추가.
+          htmlTag.classList.add(theme);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
